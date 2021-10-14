@@ -57,7 +57,6 @@ export default function Empty() {
 					</clipPath>
 				</defs>
 			</svg>
-			<p>Add some todos...</p>
 		</div>
 	);
 }

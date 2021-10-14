@@ -30,16 +30,16 @@ function TodoList(props) {
 							<input
 								type="checkbox"
 								onChange={() => props.completeTodo(todo.id)}
-								checked={todo.isComplete ? true : false}
+								checked={todo.complete ? true : false}
 							/>
 
-							{!todo.isEditing ? (
+							{!todo.editing ? (
 								<span
 									onDoubleClick={() =>
 										props.markAsEditing(todo.id)
 									}
 									className={`todo-item-label ${
-										todo.isComplete ? 'line-through' : ''
+										todo.complete ? 'line-through' : ''
 									}`}
 								>
 									{todo.title}

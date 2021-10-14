@@ -50,14 +50,7 @@ function App() {
 
             query.get().then(todos => {
 				setTodos(
-					todos.map(todo => {
-						return {
-							id: todo.id,
-							title: todo.title,
-							isComplete: todo.complete,
-							isEditing: false,
-						};
-					})
+					todos
 				);
 			});
         });
@@ -68,8 +61,8 @@ function App() {
 		//     return {
 		//         id: todo.id,
 		//         title: todo.title,
-		//         isComplete: todo.complete,
-		//         isEditing: false,
+		//         complete: todo.complete,
+		//         editing: false,
 		//     }
 		// }));
 	};
@@ -82,7 +75,7 @@ function App() {
 			{
 				id: idForTodo,
 				title: todo,
-				isComplete: false,
+				complete: false,
 			},
 		]);
 
@@ -90,13 +83,20 @@ function App() {
 	}
 
 	function deleteTodo(id) {
-		setTodos([...todos].filter(todo => todo.id !== id));
+
+        let todo = [...todos].filter(todo => todo.id === id);
+
+        app.streams.repository('todos').then(repository => {
+            repository.delete(todo[0]);
+        });
+        
+        setTodos([...todos].filter(todo => todo.id !== id));
 	}
 
 	function completeTodo(id) {
 		const updatedTodos = todos.map(todo => {
 			if (todo.id === id) {
-				todo.isComplete = !todo.isComplete;
+				todo.complete = !todo.complete;
 			}
 
 			return todo;
@@ -108,7 +108,7 @@ function App() {
 	function markAsEditing(id) {
 		const updatedTodos = todos.map(todo => {
 			if (todo.id === id) {
-				todo.isEditing = true;
+				todo.editing = true;
 			}
 
 			return todo;
@@ -121,11 +121,11 @@ function App() {
 		const updatedTodos = todos.map(todo => {
 			if (todo.id === id) {
 				if (event.target.value.trim().length === 0) {
-					todo.isEditing = false;
+					todo.editing = false;
 					return todo;
 				}
 				todo.title = event.target.value;
-				todo.isEditing = false;
+				todo.editing = false;
 			}
 
 			return todo;
@@ -137,7 +137,7 @@ function App() {
 	function cancelEdit(event, id) {
 		const updatedTodos = todos.map(todo => {
 			if (todo.id === id) {
-				todo.isEditing = false;
+				todo.editing = false;
 			}
 
 			return todo;
@@ -147,16 +147,16 @@ function App() {
 	}
 
 	function remaining() {
-		return todos.filter(todo => !todo.isComplete).length;
+		return todos.filter(todo => !todo.complete).length;
 	}
 
 	function clearCompleted() {
-		setTodos([...todos].filter(todo => !todo.isComplete));
+		setTodos([...todos].filter(todo => !todo.complete));
 	}
 
 	function completeAllTodos() {
 		const updatedTodos = todos.map(todo => {
-			todo.isComplete = true;
+			todo.complete = true;
 
 			return todo;
 		});
@@ -168,9 +168,9 @@ function App() {
 		if (filter === 'all') {
 			return todos;
 		} else if (filter === 'active') {
-			return todos.filter(todo => !todo.isComplete);
+			return todos.filter(todo => !todo.complete);
 		} else if (filter === 'completed') {
-			return todos.filter(todo => todo.isComplete);
+			return todos.filter(todo => todo.complete);
 		}
 	}
 
