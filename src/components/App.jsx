@@ -1,72 +1,78 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Empty from './Empty';
 import TodoForm from './TodoForm';
 import TodoList from './TodoList';
 import '../reset.css';
 import '../App.css';
 
+const app = window.streams.core.app;
+
+app.initialize({
+	providers: [
+		window.streams.core.HttpServiceProvider,
+		window.streams.core.StreamsServiceProvider,
+		//window.app.AppServiceProvider
+	],
+	config: {
+		http: {
+			//baseURL: this.env.get('APP_URL', 'http://localhost') + '/' + this.env.get('STREAMS_API_PREFIX', 'api'),
+			baseURL: 'http://127.0.0.1:8000/api',
+		},
+	},
+})
+	.then(app => {
+		app.boot.bind(app);
+
+		console.log('Initialized');
+
+		return app;
+	})
+	.then(app => {
+		app.start();
+
+		console.log('Started');
+
+		return app;
+	})
+	.then(app => {
+		// Not sure if this is the right place for this..
+	});
+
 function App() {
-	//let todos = window.streams.core.app.streams.entries('todos').get();
+	const [todos, setTodos] = useState([]);
 
-    var app = window.streams.core.app;
-    app
-        .initialize({
-            providers: [
-                window.streams.core.HttpServiceProvider,
-                window.streams.core.StreamsServiceProvider,
-                //window.app.AppServiceProvider
-            ],
-            config   : {
-                http: {
-                    //baseURL: this.env.get('APP_URL', 'http://localhost') + '/' + this.env.get('STREAMS_API_PREFIX', 'api'),
-                    baseURL: 'https://workbench.local:8890/api',
-                },
-                streams: {
-                    //xdebug: true
-                }
-            },
-        })
-        .then(app => {
+	useEffect(() => {
+		getTodos();
+	}, []);
 
-            app.boot.bind(app);
+	const getTodos = async () => {
+		app.streams.entries('todos').then(query => {
 
-            console.log('Initialized');
-
-            return app;
-        })
-        .then(app => {
-            
-            app.start();
-
-            console.log('Initialized');
-
-            return app;
-        })
-        .then(app => {
-            
-            
+            query.get().then(todos => {
+				setTodos(
+					todos.map(todo => {
+						return {
+							id: todo.id,
+							title: todo.title,
+							isComplete: todo.complete,
+							isEditing: false,
+						};
+					})
+				);
+			});
         });
 
-	const [todos, setTodos] = useState([
-		{
-			id: 1,
-			title: 'Finish React Series',
-			isComplete: false,
-			isEditing: false,
-		},
-		{
-			id: 2,
-			title: 'Go Grocery',
-			isComplete: true,
-			isEditing: false,
-		},
-		{
-			id: 3,
-			title: 'Take over world',
-			isComplete: false,
-			isEditing: false,
-		},
-	]);
+		//let entries = await = todos
+
+		// setTodos(todos.map(todo => {
+		//     return {
+		//         id: todo.id,
+		//         title: todo.title,
+		//         isComplete: todo.complete,
+		//         isEditing: false,
+		//     }
+		// }));
+	};
 
 	const [idForTodo, setIdForTodo] = useState(4);
 
