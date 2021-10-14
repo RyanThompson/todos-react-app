@@ -14,9 +14,7 @@ function App() {
             providers: [
                 window.streams.core.HttpServiceProvider,
                 window.streams.core.StreamsServiceProvider,
-                // window.streams.api.StreamsServiceProvider,
-                // window.streams.ui.UiServiceProvider,
-                window.app.AppServiceProvider
+                //window.app.AppServiceProvider
             ],
             config   : {
                 http: {
