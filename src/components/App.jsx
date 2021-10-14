@@ -54,32 +54,24 @@ function App() {
 				);
 			});
         });
-
-		//let entries = await = todos
-
-		// setTodos(todos.map(todo => {
-		//     return {
-		//         id: todo.id,
-		//         title: todo.title,
-		//         complete: todo.complete,
-		//         editing: false,
-		//     }
-		// }));
 	};
 
-	const [idForTodo, setIdForTodo] = useState(4);
-
 	function addTodo(todo) {
+
+        let newTodo = {
+            id: new Date().getTime(),
+            title: todo,
+            complete: false,
+        };
+
+        app.streams.repository('todos').then(repository => {
+            newTodo = repository.create(newTodo);
+        });
+        
 		setTodos([
 			...todos,
-			{
-				id: idForTodo,
-				title: todo,
-				complete: false,
-			},
+			newTodo,
 		]);
-
-		setIdForTodo(prevIdForTodo => prevIdForTodo + 1);
 	}
 
 	function deleteTodo(id) {
@@ -97,6 +89,8 @@ function App() {
 		const updatedTodos = todos.map(todo => {
 			if (todo.id === id) {
 				todo.complete = !todo.complete;
+
+                todo.save();
 			}
 
 			return todo;
@@ -125,7 +119,10 @@ function App() {
 					return todo;
 				}
 				todo.title = event.target.value;
-				todo.editing = false;
+
+				delete todo.editing;
+
+                todo.save();
 			}
 
 			return todo;
@@ -150,7 +147,7 @@ function App() {
 		return todos.filter(todo => !todo.complete).length;
 	}
 
-	function clearCompleted() {
+	function clearComplete() {
 		setTodos([...todos].filter(todo => !todo.complete));
 	}
 
@@ -169,7 +166,7 @@ function App() {
 			return todos;
 		} else if (filter === 'active') {
 			return todos.filter(todo => !todo.complete);
-		} else if (filter === 'completed') {
+		} else if (filter === 'complete') {
 			return todos.filter(todo => todo.complete);
 		}
 	}
@@ -189,7 +186,7 @@ function App() {
 						cancelEdit={cancelEdit}
 						deleteTodo={deleteTodo}
 						remaining={remaining}
-						clearCompleted={clearCompleted}
+						clearComplete={clearComplete}
 						completeAllTodos={completeAllTodos}
 						todosFiltered={todosFiltered}
 					/>
