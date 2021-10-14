@@ -78,8 +78,8 @@ function App() {
 
         let todo = [...todos].filter(todo => todo.id === id);
 
-        app.streams.repository('todos').then(repository => {
-            repository.delete(todo[0]);
+        app.streams.entries('todos').then(query => {
+            query.where('id', todo.id).delete();
         });
         
         setTodos([...todos].filter(todo => todo.id !== id));
@@ -154,6 +154,8 @@ function App() {
 	function completeAllTodos() {
 		const updatedTodos = todos.map(todo => {
 			todo.complete = true;
+
+            todo.save();
 
 			return todo;
 		});

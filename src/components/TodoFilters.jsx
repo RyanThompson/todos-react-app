@@ -34,11 +34,11 @@ function TodoFilters(props) {
 			</button>
 			<button
 				onClick={() => {
-					props.setFilter('completed');
-					props.todosFiltered('completed');
+					props.setFilter('complete');
+					props.todosFiltered('complete');
 				}}
 				className={`button filter-button ${
-					props.filter === 'completed' ? 'filter-button-active' : ''
+					props.filter === 'complete' ? 'filter-button-active' : ''
 				}`}
 			>
 				Completed

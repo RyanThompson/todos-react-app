@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import TodoItemsRemaining from './TodoItemsRemaining';
-import TodoClearCompleted from './TodoClearCompleted';
+import TodoClearComplete from './TodoClearComplete';
 import TodoCompleteAllTodos from './TodoCompleteAllTodos';
 import TodoFilters from './TodoFilters';
 
@@ -14,7 +14,7 @@ TodoList.propTypes = {
 	cancelEdit: PropTypes.func.isRequired,
 	deleteTodo: PropTypes.func.isRequired,
 	remaining: PropTypes.func.isRequired,
-	clearCompleted: PropTypes.func.isRequired,
+	clearComplete: PropTypes.func.isRequired,
 	completeAllTodos: PropTypes.func.isRequired,
 };
 
@@ -100,7 +100,7 @@ function TodoList(props) {
 					setFilter={setFilter}
 				/>
 				<div>
-					<TodoClearCompleted clearCompleted={props.clearCompleted} />
+					<TodoClearComplete clearComplete={props.clearComplete} />
 				</div>
 			</div>
 		</>
