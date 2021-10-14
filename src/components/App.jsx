@@ -8,6 +8,47 @@ import '../App.css';
 function App() {
 	//let todos = window.streams.core.app.streams.entries('todos').get();
 
+    var app = window.streams.core.app;
+    app
+        .initialize({
+            providers: [
+                window.streams.core.HttpServiceProvider,
+                window.streams.core.StreamsServiceProvider,
+                // window.streams.api.StreamsServiceProvider,
+                // window.streams.ui.UiServiceProvider,
+                window.app.AppServiceProvider
+            ],
+            config   : {
+                http: {
+                    //baseURL: this.env.get('APP_URL', 'http://localhost') + '/' + this.env.get('STREAMS_API_PREFIX', 'api'),
+                    baseURL: 'https://workbench.local:8890/api',
+                },
+                streams: {
+                    //xdebug: true
+                }
+            },
+        })
+        .then(app => {
+
+            app.boot.bind(app);
+
+            console.log('Initialized');
+
+            return app;
+        })
+        .then(app => {
+            
+            app.start();
+
+            console.log('Initialized');
+
+            return app;
+        })
+        .then(app => {
+            
+            
+        });
+
 	const [todos, setTodos] = useState([
 		{
 			id: 1,
