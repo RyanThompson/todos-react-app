@@ -47,42 +47,34 @@ function App() {
 
 	const getTodos = async () => {
 		app.streams.entries('todos').then(query => {
-
-            query.get().then(todos => {
-				setTodos(
-					todos
-				);
+			query.get().then(todos => {
+				setTodos(todos);
 			});
-        });
+		});
 	};
 
 	function addTodo(todo) {
+		let newTodo = {
+			id: new Date().getTime(),
+			title: todo,
+			complete: false,
+		};
 
-        let newTodo = {
-            id: new Date().getTime(),
-            title: todo,
-            complete: false,
-        };
+		app.streams.repository('todos').then(repository => {
+			newTodo = repository.create(newTodo);
+		});
 
-        app.streams.repository('todos').then(repository => {
-            newTodo = repository.create(newTodo);
-        });
-        
-		setTodos([
-			...todos,
-			newTodo,
-		]);
+		setTodos([...todos, newTodo]);
 	}
 
 	function deleteTodo(id) {
+		let todo = [...todos].filter(todo => todo.id === id);
 
-        let todo = [...todos].filter(todo => todo.id === id);
+		app.streams.entries('todos').then(query => {
+			query.where('id', todo.id).delete();
+		});
 
-        app.streams.entries('todos').then(query => {
-            query.where('id', todo.id).delete();
-        });
-        
-        setTodos([...todos].filter(todo => todo.id !== id));
+		setTodos([...todos].filter(todo => todo.id !== id));
 	}
 
 	function completeTodo(id) {
@@ -90,7 +82,9 @@ function App() {
 			if (todo.id === id) {
 				todo.complete = !todo.complete;
 
-                todo.save();
+				todo.save();
+
+                todo.editing = false;
 			}
 
 			return todo;
@@ -120,9 +114,9 @@ function App() {
 				}
 				todo.title = event.target.value;
 
-				delete todo.editing;
+				todo.save();
 
-                todo.save();
+                todo.editing = false;
 			}
 
 			return todo;
@@ -155,7 +149,7 @@ function App() {
 		const updatedTodos = todos.map(todo => {
 			todo.complete = true;
 
-            todo.save();
+			todo.save();
 
 			return todo;
 		});
