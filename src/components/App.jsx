@@ -21,18 +21,17 @@ app.initialize({
 	},
 })
 	.then(app => {
+        
+        console.log('Initialized');
+        
 		app.boot.bind(app);
 
-		console.log('Initialized');
-
-		return app;
+        return app;
 	})
 	.then(app => {
-		app.start();
-
 		console.log('Started');
-
-		return app;
+		
+        return app.start();
 	})
 	.then(app => {
 		// Not sure if this is the right place for this..
@@ -47,7 +46,7 @@ function App() {
 
 	const getTodos = async () => {
 		app.streams.entries('todos').then(query => {
-			query.get().then(todos => {
+			query.where('complete', false).get().then(todos => {
 				setTodos(todos);
 			});
 		});
@@ -84,7 +83,7 @@ function App() {
 
 				todo.save();
 
-                todo.editing = false;
+				todo.editing = false;
 			}
 
 			return todo;
@@ -116,7 +115,7 @@ function App() {
 
 				todo.save();
 
-                todo.editing = false;
+				todo.editing = false;
 			}
 
 			return todo;
