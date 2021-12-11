@@ -15,8 +15,7 @@ app.initialize({
 	],
 	config: {
 		http: {
-			//baseURL: this.env.get('APP_URL', 'http://localhost') + '/' + this.env.get('STREAMS_API_PREFIX', 'api'),
-			baseURL: 'http://127.0.0.1:8000/api',
+			baseURL: this.env.get('API_URL', 'http://127.0.0.1:8000/api')
 		},
 	},
 })
@@ -54,7 +53,6 @@ function App() {
 
 	function addTodo(todo) {
 		let newTodo = {
-			id: new Date().getTime(),
 			title: todo,
 			complete: false,
 		};
