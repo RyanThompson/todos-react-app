@@ -4,37 +4,13 @@ import TodoForm from './TodoForm';
 import TodoList from './TodoList';
 import '../reset.css';
 import '../App.css';
+import { Streams } from '@laravel-streams/streams-api';
 
-const app = window.streams.core.app;
+const streams = new Streams({
+	baseURL: process.env.REACT_APP_API_URL,
+});
 
-app.initialize({
-	providers: [
-		window.streams.core.HttpServiceProvider,
-		window.streams.core.StreamsServiceProvider,
-		//window.app.AppServiceProvider
-	],
-	config: {
-		http: {
-			baseURL: this.env.get('API_URL', 'http://127.0.0.1:8000/api')
-		},
-	},
-})
-	.then(app => {
-        
-        console.log('Initialized');
-        
-		app.boot.bind(app);
-
-        return app;
-	})
-	.then(app => {
-		console.log('Started');
-		
-        return app.start();
-	})
-	.then(app => {
-		// Not sure if this is the right place for this..
-	});
+window.streams = streams;
 
 function App() {
 	const [todos, setTodos] = useState([]);
@@ -44,10 +20,13 @@ function App() {
 	}, []);
 
 	const getTodos = async () => {
-		app.streams.entries('todos').then(query => {
-			query.where('complete', false).get().then(todos => {
-				setTodos(todos);
-			});
+		streams.entries('todos').then(query => {
+			query
+				.where('complete', false)
+				.get()
+				.then(todos => {
+					setTodos(todos.all());
+				});
 		});
 	};
 
@@ -57,7 +36,7 @@ function App() {
 			complete: false,
 		};
 
-		app.streams.repository('todos').then(repository => {
+		streams.repository('todos').then(repository => {
 			newTodo = repository.create(newTodo);
 		});
 
@@ -67,7 +46,7 @@ function App() {
 	function deleteTodo(id) {
 		let todo = [...todos].filter(todo => todo.id === id);
 
-		app.streams.entries('todos').then(query => {
+		streams.entries('todos').then(query => {
 			query.where('id', todo.id).delete();
 		});
 
@@ -77,7 +56,7 @@ function App() {
 	function completeTodo(id) {
 		const updatedTodos = todos.map(todo => {
 			if (todo.id === id) {
-				todo.complete = !todo.complete;
+				todo.complete = true;
 
 				todo.save();
 
