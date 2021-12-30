@@ -30,26 +30,28 @@ function App() {
 		});
 	};
 
-	function addTodo(todo) {
-		let newTodo = {
+	async function addTodo(todo) {
+		
+		let data = {
 			title: todo,
 			complete: false,
 		};
 
-		streams.repository('todos').then(repository => {
-			newTodo = repository.create(newTodo);
-		});
+		const repository = await streams.repository('todos');
+
+		const newTodo = await repository.create(data);
 
 		setTodos([...todos, newTodo]);
 	}
 
-	function deleteTodo(id) {
-		let todo = [...todos].filter(todo => todo.id === id);
+	async function deleteTodo(id) {
 
-		streams.entries('todos').then(query => {
-			query.where('id', todo.id).delete();
-		});
+		let todo = [...todos].find(todo => todo.id === id);
+		
+		const repository = await streams.repository('todos');
 
+		await repository.delete(todo);
+		
 		setTodos([...todos].filter(todo => todo.id !== id));
 	}
 

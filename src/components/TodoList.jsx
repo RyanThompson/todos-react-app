@@ -25,7 +25,7 @@ function TodoList(props) {
 		<>
 			<ul className="todo-list">
 				{props.todosFiltered(filter).map((todo, index) => (
-					<li key={todo.id} className="todo-item-container">
+					<li key={index} className="todo-item-container">
 						<div className="todo-item">
 							<input
 								type="checkbox"
