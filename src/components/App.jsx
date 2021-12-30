@@ -7,8 +7,7 @@ import '../App.css';
 import { Streams } from '@laravel-streams/api-client';
 
 const streams = new Streams({
-	baseURL: process.env.REACT_APP_API_URL,
-	
+	baseURL: process.env.REACT_APP_API_URL
 });
 
 window.streams = streams;
@@ -57,7 +56,7 @@ function App() {
 	function completeTodo(id) {
 		const updatedTodos = todos.map(todo => {
 			if (todo.id === id) {
-				todo.complete = true;
+				todo.complete = !todo.complete;
 
 				todo.save();
 
