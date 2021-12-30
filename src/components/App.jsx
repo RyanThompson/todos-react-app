@@ -4,10 +4,11 @@ import TodoForm from './TodoForm';
 import TodoList from './TodoList';
 import '../reset.css';
 import '../App.css';
-import { Streams } from '@laravel-streams/streams-api';
+import { Streams } from '@laravel-streams/api-client';
 
 const streams = new Streams({
 	baseURL: process.env.REACT_APP_API_URL,
+	
 });
 
 window.streams = streams;
